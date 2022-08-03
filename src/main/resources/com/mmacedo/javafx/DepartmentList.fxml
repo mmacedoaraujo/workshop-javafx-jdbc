@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="621.0" prefWidth="838.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mmacedo.javafx.gui.DepartmentListController">
    <children>
       <Label text="Department Registration">
          <font>
@@ -22,13 +21,13 @@
       </Label>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
         <items>
-          <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="62.0" text="New" />
+          <Button fx:id="btNew" mnemonicParsing="false" onAction="#btnNewAction" prefHeight="25.0" prefWidth="62.0" text="New" />
         </items>
       </ToolBar>
-      <TableView prefHeight="200.0" prefWidth="200.0">
+      <TableView fx:id="tableViewDepartment" prefHeight="448.0" prefWidth="698.0" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn prefWidth="46.0" text="Id" />
-          <TableColumn prefWidth="104.0" text="Name" />
+          <TableColumn fx:id="tableColumnId" prefWidth="46.0" text="Id" />
+          <TableColumn fx:id="tableColumnName" prefWidth="104.0" text="Name" />
         </columns>
       </TableView>
    </children>
