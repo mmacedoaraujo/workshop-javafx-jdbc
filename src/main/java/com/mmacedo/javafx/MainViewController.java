@@ -29,7 +29,7 @@ public class MainViewController {
 
         }
         @FXML
-        protected void menuItemAboutAction() throws IOException {
+        protected synchronized void menuItemAboutAction() throws IOException {
             VBox newVBox = FXMLLoader.load(getClass().getResource("About.fxml"));
 
             Node mainMenu = vBox.getChildren().get(0);
