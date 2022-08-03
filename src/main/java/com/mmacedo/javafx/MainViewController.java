@@ -25,17 +25,25 @@ public class MainViewController {
 
         }
         @FXML
-        protected void menuItemDepartmentAction() {
-
+        protected void menuItemDepartmentAction() throws IOException {
+            loadView("DepartmentList.fxml");
         }
         @FXML
         protected synchronized void menuItemAboutAction() throws IOException {
-            VBox newVBox = FXMLLoader.load(getClass().getResource("About.fxml"));
+            loadView("About.fxml");
+        }
 
-            Node mainMenu = vBox.getChildren().get(0);
-            vBox.getChildren().clear();
-            vBox.getChildren().setAll(mainMenu);
-            vBox.getChildren().addAll(newVBox.getChildren());
+        protected void loadView(String fileName) {
+            try {
+                VBox newVBox = FXMLLoader.load(getClass().getResource(fileName));
+
+                Node mainMenu = vBox.getChildren().get(0);
+                vBox.getChildren().clear();
+                vBox.getChildren().setAll(mainMenu);
+                vBox.getChildren().addAll(newVBox.getChildren());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
 
 }

@@ -1,4 +1,4 @@
-package com.mmacedo.javafx;
+package com.mmacedo.javafx.gui;
 
 public class AboutController {
 }
