@@ -12,39 +12,12 @@ public class Department implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private SimpleStringProperty name;
+    private String name;
 
-    private SimpleIntegerProperty id;
+    private Integer id;
 
 
-    public Department(String name, Integer id) {
-        this.name = new SimpleStringProperty(name);
-        this.id = new SimpleIntegerProperty(id);
-    }
 
-    public String getName() {
-        return name.get();
-    }
-
-    public SimpleStringProperty nameProperty() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name.set(name);
-    }
-
-    public int getId() {
-        return id.get();
-    }
-
-    public SimpleIntegerProperty idProperty() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id.set(id);
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -52,6 +25,27 @@ public class Department implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         Department that = (Department) o;
         return Objects.equals(name, that.name) && Objects.equals(id, that.id);
+    }
+
+    public Department(String name, Integer id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
@@ -62,7 +56,7 @@ public class Department implements Serializable {
     @Override
     public String toString() {
         return "Department{" +
-                "name=" + name +
+                "name='" + name + '\'' +
                 ", id=" + id +
                 '}';
     }

@@ -1,7 +1,7 @@
 package com.mmacedo.javafx.gui;
 
+import com.mmacedo.javafx.db.DbConnector;
 import com.mmacedo.javafx.model.entities.Department;
-import com.mmacedo.javafx.model.service.DepartmentService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,11 +12,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class DepartmentListController implements Initializable {
 
+    private Department department;
 
     @FXML
     private Button btnNew;
@@ -27,6 +30,7 @@ public class DepartmentListController implements Initializable {
     @FXML
     private TableColumn<Department, String> name;
 
+    ObservableList<Department> departmenList = FXCollections.observableArrayList();
     @FXML
     protected void btnNewAction() {
         System.out.println("Aloha");
@@ -34,17 +38,20 @@ public class DepartmentListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
+        try {
+            Connection connection = DbConnector.getConnection();
+            ResultSet resultSet = connection.createStatement().executeQuery("select * from department");
+
+            while (resultSet.next()) {
+                departmenList.add(new Department(resultSet.getString("Name"), resultSet.getInt("Id")));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
         id.setCellValueFactory(new PropertyValueFactory<>("id"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-        tableViewDepartment.setItems(departmentList);
+        tableViewDepartment.setItems(departmenList);
     }
-
-    ObservableList<Department> departmentList = FXCollections.observableArrayList(new Department("Books", 1), new Department("Computers", 2), new Department("Electronics", 3));
-
-
-
-
-
 }

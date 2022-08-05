@@ -17,7 +17,6 @@ import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
-        private DepartmentListController departmentListController;
         @FXML
         private VBox vBox;
         @FXML
