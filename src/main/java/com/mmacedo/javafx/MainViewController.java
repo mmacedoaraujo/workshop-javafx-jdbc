@@ -1,6 +1,8 @@
 package com.mmacedo.javafx;
 
+import com.mmacedo.javafx.gui.DepartmentListController;
 import com.mmacedo.javafx.gui.util.Alerts;
+import com.mmacedo.javafx.model.service.DepartmentService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,6 +17,7 @@ import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
+        private DepartmentListController departmentListController;
         @FXML
         private VBox vBox;
         @FXML
@@ -32,6 +35,7 @@ public class MainViewController implements Initializable {
         @FXML
         protected void menuItemDepartmentAction() throws IOException {
             loadView("DepartmentList.fxml");
+
         }
         @FXML
         protected synchronized void menuItemAboutAction() throws IOException {
@@ -40,8 +44,8 @@ public class MainViewController implements Initializable {
 
         protected void loadView(String fileName) {
             try {
-                VBox newVBox = FXMLLoader.load(getClass().getResource(fileName));
-
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(fileName));
+                VBox newVBox = loader.load();
                 Node mainMenu = vBox.getChildren().get(0);
                 vBox.getChildren().clear();
                 vBox.getChildren().setAll(mainMenu);

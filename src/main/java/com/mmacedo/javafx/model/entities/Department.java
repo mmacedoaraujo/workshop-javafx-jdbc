@@ -1,25 +1,49 @@
 package com.mmacedo.javafx.model.entities;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.TableColumn;
+
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class Department implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Integer id;
-    private String name;
 
-    public Department() {
+    private SimpleStringProperty name;
 
+    private SimpleIntegerProperty id;
+
+
+    public Department(String name, Integer id) {
+        this.name = new SimpleStringProperty(name);
+        this.id = new SimpleIntegerProperty(id);
     }
 
-    public Department(Integer id) {
-        this.id = id;
-        this.name = name;
+    public String getName() {
+        return name.get();
     }
 
-    public Integer getId() {
+    public SimpleStringProperty nameProperty() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public int getId() {
+        return id.get();
+    }
+
+    public SimpleIntegerProperty idProperty() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id.set(id);
     }
 
     @Override
@@ -27,19 +51,19 @@ public class Department implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Department that = (Department) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        return Objects.equals(name, that.name) && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name, id);
     }
 
     @Override
     public String toString() {
         return "Department{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name=" + name +
+                ", id=" + id +
                 '}';
     }
 }

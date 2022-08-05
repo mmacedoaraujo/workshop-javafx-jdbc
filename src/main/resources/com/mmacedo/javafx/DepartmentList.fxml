@@ -26,8 +26,8 @@
       </ToolBar>
       <TableView fx:id="tableViewDepartment" prefHeight="448.0" prefWidth="698.0" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="tableColumnId" prefWidth="46.0" text="Id" />
-          <TableColumn fx:id="tableColumnName" prefWidth="104.0" text="Name" />
+          <TableColumn fx:id="id" prefWidth="46.0" text="id" />
+          <TableColumn fx:id="name" prefWidth="104.0" text="name" />
         </columns>
       </TableView>
    </children>
