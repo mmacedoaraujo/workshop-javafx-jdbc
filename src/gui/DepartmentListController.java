@@ -2,32 +2,34 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import db.DbConnector;
+import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.entities.Department;
+import model.services.DepartmentService;
 
 public class DepartmentListController extends MainViewController implements Initializable {
 
-	MainViewController main = new MainViewController();
-	private Department department;
-	DbConnector dbConnector = new DbConnector();
+	private DepartmentService service;
 
 	@FXML
 	private VBox vBox;
@@ -44,26 +46,51 @@ public class DepartmentListController extends MainViewController implements Init
 
 	@FXML
 	protected void btnNewAction(ActionEvent event) throws IOException {
-		
+		Stage parentStage = Utils.currentStage(event);
+		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
+	}
+
+	public void setDepartmentService(DepartmentService service) {
+		this.service = service;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resourceBundle) {
-		try {
-			Connection connection = DbConnector.getConnection();
-			ResultSet resultSet = connection.createStatement().executeQuery("select * from department ");
+		initializeNodes();
+	}
 
-			while (resultSet.next()) {
-				departmentList.add(new Department(resultSet.getInt("Id"), resultSet.getString("Name")));
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-
+	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
+		Stage stage = (Stage) Main.getMainScene().getWindow();
+	}
+
+	public void updateTableView() {
+		if (service == null) {
+			throw new IllegalStateException("Service was null");
+		}
+		List<Department> list = service.findAll();
+		departmentList = FXCollections.observableArrayList(list);
 		tableViewDepartment.setItems(departmentList);
+
+	}
+
+	private void createDialogForm(String absoluteName, Stage parentStage) {
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Enter department data");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false);
+			dialogStage.initOwner(parentStage);
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+		} catch (IOException ex) {
+			Alerts.showAlert("IO Exceptio", "Error loading view", ex.getMessage(), AlertType.ERROR);
+		}
 	}
 
 }

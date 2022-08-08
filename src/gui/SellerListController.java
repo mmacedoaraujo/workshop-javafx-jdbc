@@ -1,13 +1,11 @@
 package gui;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import db.DbConnector;
+import application.Main;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,11 +14,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import model.entities.Department;
 import model.entities.Seller;
+import model.services.SellerService;
 
 public class SellerListController implements Initializable {
 
+	private SellerService service;
 	@FXML
 	private ToolBar tButtonInsert;
 	@FXML
@@ -40,22 +41,16 @@ public class SellerListController implements Initializable {
 
 	ObservableList<Seller> sellerList = FXCollections.observableArrayList();
 
+	public void setSellerService(SellerService service) {
+		this.service = service;
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle resourceBundle) {
-		try {
-			Connection connection = DbConnector.getConnection();
-			ResultSet rs = connection.createStatement().executeQuery("select * from seller ");
+		initializeNodes();
+	}
 
-			while (rs.next()) {
-
-				Department dep = instantiateDepartment(rs);
-				Seller seller = instantiateSeller(rs, dep);
-				sellerList.add(seller);
-			}
-		} catch (SQLException ex) {
-			ex.printStackTrace();
-		}
-
+	public void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
 		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate"));
@@ -63,24 +58,17 @@ public class SellerListController implements Initializable {
 		tableColumnDepartmentId.setCellValueFactory(new PropertyValueFactory<>("DepartmentId"));
 		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary"));
 		
+		Stage stage = (Stage) Main.getMainScene().getWindow();
 
+	}
+	
+	public void updateTableView() {
+		if (service == null) {
+			throw new IllegalStateException("Service was null");
+		}
+		List<Seller> list = service.findAll();
+		sellerList = FXCollections.observableArrayList(list);
 		tableViewSeller.setItems(sellerList);
 	}
 
-	private Seller instantiateSeller(ResultSet rs, Department dep) throws SQLException {
-		Seller seller = new Seller();
-		seller.setId(rs.getInt("Id"));
-		seller.setName(rs.getString("Name"));
-		seller.setEmail(rs.getString("Email"));
-		seller.setBaseSalary(rs.getDouble("BaseSalary"));
-		seller.setBirthDate(rs.getDate("BirthDate"));
-		seller.setDepartment(dep);
-		return seller;
-	}
-
-	private Department instantiateDepartment(ResultSet rs) throws SQLException {
-		Department dep = new Department();
-		dep.setId(rs.getInt("DepartmentId"));		
-		return dep;
-	}
 }
