@@ -8,4 +8,5 @@ module workshop_javafx_jdbc {
 	opens application to javafx.graphics, javafx.fxml, javafx.base, javafx.controls;
 	opens gui to javafx.graphics, javafx.fxml, javafx.base, javafx.controls;
 	exports gui to javafx.graphics, javafx.fxml, javafx.base, javafx.controls;
+	opens model.entities to javafx.graphics, javafx.fxml, javafx.base, javafx.controls;
 }

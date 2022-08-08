@@ -1,8 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import db.DbConnector;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,15 +20,16 @@ import model.entities.Department;
 public class DepartmentListController implements Initializable {
 
     private Department department;
-
+    
+    DbConnector dbConnector = new DbConnector();
     @FXML
     private Button btnNew;
     @FXML
     private TableView<Department> tableViewDepartment;
     @FXML
-    private TableColumn<Department, Integer> id;
+    private TableColumn<Department, Integer> tableColumnId;
     @FXML
-    private TableColumn<Department, String> name;
+    private TableColumn<Department, String> tableColumnName;
 
     ObservableList<Department> departmenList = FXCollections.observableArrayList();
     @FXML
@@ -34,10 +39,20 @@ public class DepartmentListController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
-
-        id.setCellValueFactory(new PropertyValueFactory<>("id"));
-        name.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        tableViewDepartment.setItems(departmenList);
+    	try {
+    		Connection connection = DbConnector.getConnection();
+    		ResultSet resultSet = connection.createStatement().executeQuery("select * from department ");
+    		
+    		while(resultSet.next()) {
+    			departmenList.add(new Department(resultSet.getString("Name"), resultSet.getInt("Id")));
+    		}
+    	} catch (SQLException ex) {
+    		ex.printStackTrace();
+    	}
+    	
+    	tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id"));
+    	tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+    	
+    	tableViewDepartment.setItems(departmenList);
     }
 }
