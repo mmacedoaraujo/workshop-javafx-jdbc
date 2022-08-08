@@ -24,7 +24,7 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	protected void menuItemSellerAction() {
-
+		loadView("/gui/SellerList.fxml");
 	}
 
 	@FXML
@@ -47,11 +47,28 @@ public class MainViewController implements Initializable {
 			vBox.getChildren().setAll(mainMenu);
 			vBox.getChildren().addAll(newVBox.getChildren());
 		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
 
+	public VBox getvBox() {
+		return vBox;
+	}
+
+	public MenuItem getMenuItemSeller() {
+		return menuItemSeller;
+	}
+
+	public MenuItem getMenuItemDepartment() {
+		return menuItemDepartment;
+	}
+
+	public MenuItem getMenuItemAbout() {
+		return menuItemAbout;
+	}
+
 	@Override
-	public void initialize(URL uri, ResourceBundle resourceBundle) {
+	public void initialize(URL url, ResourceBundle resourceBundle) {
 
 	}
 }
