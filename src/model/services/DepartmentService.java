@@ -14,8 +14,7 @@ public class DepartmentService {
 		return dao.findAll();
 	}
 	
-	public Department insert(Department obj) {
+	public void insert(Department obj) {
 		dao.insert(obj);
-		return obj;
 	}
 }
