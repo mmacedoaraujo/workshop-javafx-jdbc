@@ -15,10 +15,15 @@ public class DepartmentService {
 	}
 
 	public void saveOrUpdate(Department obj) {
+		// verifying if the object already exists or not by verifying the id
 		if (obj.getId() == null) {
 			dao.insert(obj);
 		} else {
 			dao.update(obj);
 		}
+	}
+
+	public void remove(Department obj) {
+		dao.deleteByID(obj.getId());
 	}
 }
