@@ -26,7 +26,8 @@
       <TableView fx:id="tableViewDepartment" prefHeight="183.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="tableColumnId" minWidth="-1.0" prefWidth="98.0" text="ID" />
-          <TableColumn fx:id="tableColumnName" minWidth="-Infinity" prefWidth="501.0" resizable="false" text="Name" />
+          <TableColumn fx:id="tableColumnName" minWidth="-Infinity" prefWidth="370.0" resizable="false" text="Name" />
+            <TableColumn fx:id="tableColumnEDIT" minWidth="-1.0" prefWidth="229.0" />
         </columns>
       </TableView>
    </children>
