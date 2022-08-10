@@ -15,7 +15,16 @@ public class SellerService {
 		return dao.findAll();
 	}
 	
-	public void insert(Seller seller) {
-		dao.insert(seller);
+	public void saveOrUpdate(Seller obj) {
+		// verifying if the object already exists or not by verifying the id
+		if (obj.getId() == null) {
+			dao.insert(null);
+		} else {
+			dao.update(obj);
+		}
+	}
+	
+	public void remove(Seller obj) {
+		dao.deleteByID(obj.getId());
 	}
 }
