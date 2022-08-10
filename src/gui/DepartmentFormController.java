@@ -3,7 +3,9 @@ package gui;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import db.DbException;
 import gui.listeners.DataChangeListener;
@@ -18,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.exceptions.ValidationException;
 import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
@@ -25,7 +28,7 @@ public class DepartmentFormController implements Initializable {
 	private DepartmentService service;
 
 	private Department entity;
-	
+
 	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 
 	@FXML
@@ -54,12 +57,15 @@ public class DepartmentFormController implements Initializable {
 			Utils.currentStage(event).close();
 		} catch (DbException ex) {
 			Alerts.showAlert("Error saving object", null, ex.getMessage(), AlertType.ERROR);
+			// treating the ValidationException inside the getFormData() method
+		} catch (ValidationException ex) {
+			setErrorMessages(ex.getErrors());
 		}
 
 	}
 
 	private void notifyDataChangeListener() {
-		for (DataChangeListener listener: dataChangeListeners) {
+		for (DataChangeListener listener : dataChangeListeners) {
 			listener.onDataChanged();
 		}
 	}
@@ -67,8 +73,22 @@ public class DepartmentFormController implements Initializable {
 	private Department getFormData() {
 		Department obj = new Department();
 
+		ValidationException exception = new ValidationException("Validation Error");
+
 		obj.setId(Utils.tryParseToInt(txtId.getText()));
+
+		// verifying if the name field is empty and adding an error in the
+		// ValidationException class method
+		if (txtName.getText() == null || txtName.getText().trim().equals("")) {
+			exception.addError("Name", "Field can't be empty");
+		}
 		obj.setName(txtName.getText());
+
+		// checking if there are any exceptions and throwing it
+		if (exception.getErrors().size() > 0) {
+			throw exception;
+		}
+
 		return obj;
 	}
 
@@ -76,7 +96,7 @@ public class DepartmentFormController implements Initializable {
 	protected void btCancelAction(ActionEvent event) {
 		Utils.currentStage(event).close();
 	}
-	
+
 	public void subscribeDataChangeListener(DataChangeListener listener) {
 		dataChangeListeners.add(listener);
 	}
@@ -106,5 +126,15 @@ public class DepartmentFormController implements Initializable {
 		}
 		txtId.setText(String.valueOf(entity.getId()));
 		txtName.setText(entity.getName());
+	}
+
+	private void setErrorMessages(Map<String, String> errors) {
+		// getting errors in the Map
+		Set<String> fields = errors.keySet();
+
+		if (fields.contains("Name")) {
+			// setting the error message in the label
+			labelErrorName.setText(errors.get("Name"));
+		}
 	}
 }
