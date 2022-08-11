@@ -15,19 +15,29 @@ import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
+import model.entities.Department;
 import model.entities.Seller;
 import model.exceptions.ValidationException;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerFormController implements Initializable {
+
+	private DepartmentService departmentService;
 
 	private SellerService service;
 
@@ -46,6 +56,8 @@ public class SellerFormController implements Initializable {
 	@FXML
 	private TextField txtBaseSalary;
 	@FXML
+	private ComboBox<Department> comboBoxDepartment;
+	@FXML
 	private Label labelErrorName;
 	@FXML
 	private Label labelErrorEmail;
@@ -57,6 +69,21 @@ public class SellerFormController implements Initializable {
 	private Button btSave;
 	@FXML
 	private Button btCancel;
+
+	ObservableList<Department> departmentList = FXCollections.observableArrayList();
+
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
+	}
+
+	public void setServices(SellerService service, DepartmentService departmentService) {
+		this.service = service;
+		this.departmentService = departmentService;
+	}
+
+	public void setSeller(Seller entity) {
+		this.entity = entity;
+	}
 
 	@FXML
 	protected void btSaveAction(ActionEvent event) {
@@ -113,18 +140,6 @@ public class SellerFormController implements Initializable {
 		Utils.currentStage(event).close();
 	}
 
-	public void subscribeDataChangeListener(DataChangeListener listener) {
-		dataChangeListeners.add(listener);
-	}
-
-	public void setSellerService(SellerService service) {
-		this.service = service;
-	}
-
-	public void setSeller(Seller entity) {
-		this.entity = entity;
-	}
-
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		initializeNodes();
@@ -137,6 +152,7 @@ public class SellerFormController implements Initializable {
 		Constraints.setTextFieldDouble(txtBaseSalary);
 		Constraints.setTextFieldMaxLength(txtEmail, 60);
 		Utils.formatDatePicker(datePickerBirthDate, "dd/MM/yyyy");
+		initializeComboBoxDepartment();
 	}
 
 	// this method takes the info from the object and insert into the table
@@ -153,6 +169,19 @@ public class SellerFormController implements Initializable {
 			datePickerBirthDate
 					.setValue(LocalDate.ofInstant(entity.getBirthDate().toInstant(), ZoneId.systemDefault()));
 		}
+		if (entity.getDepartment() == null) {
+			comboBoxDepartment.getSelectionModel().selectFirst();
+		}
+		comboBoxDepartment.setValue(entity.getDepartment());
+	}
+
+	public void loadAssociatedObjects() {
+		if (departmentService == null) {
+			throw new IllegalStateException("Department service was null");
+		}
+		List<Department> list = departmentService.findAll();
+		departmentList = FXCollections.observableArrayList(list);
+		comboBoxDepartment.setItems(departmentList);
 	}
 
 	private void setErrorMessages(Map<String, String> errors) {
@@ -164,4 +193,18 @@ public class SellerFormController implements Initializable {
 			labelErrorName.setText(errors.get("Name"));
 		}
 	}
+
+	private void initializeComboBoxDepartment() {
+		Callback<ListView<Department>, ListCell<Department>> factory = listView -> new ListCell<Department>() {
+			@Override
+			protected void updateItem(Department item, boolean empty) {
+				super.updateItem(item, empty);
+				setText(empty ? "" : item.getName());
+			}
+		};
+
+		comboBoxDepartment.setCellFactory(factory);
+		comboBoxDepartment.setButtonCell(factory.call(null));
+	}
+
 }
