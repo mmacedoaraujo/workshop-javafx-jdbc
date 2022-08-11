@@ -92,11 +92,11 @@ public class SellerDaoJdbc implements SellerDao {
 			st.setInt(1, id);
 
 			int rows = st.executeUpdate();
-			
+
 			if (rows == 0) {
 				throw new DbException("You have entered an invalid id!");
 			}
-			
+
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		} finally {
@@ -137,7 +137,7 @@ public class SellerDaoJdbc implements SellerDao {
 		seller.setName(rs.getString("Name"));
 		seller.setEmail(rs.getString("Email"));
 		seller.setBaseSalary(rs.getDouble("BaseSalary"));
-		seller.setBirthDate(rs.getDate("BirthDate"));
+		seller.setBirthDate(new java.util.Date(rs.getTimestamp("BirthDate").getTime()));
 		seller.setDepartment(dep);
 		return seller;
 	}
